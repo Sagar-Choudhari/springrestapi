@@ -1,6 +1,7 @@
 package com.springrest.springrest.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,7 +40,7 @@ public class MyController {
 	}
 	
 	@GetMapping("/{courseId}")
-	public Courses getCourse(@PathVariable String courseId)
+	public Optional<Courses> getCourse(@PathVariable String courseId)
 	{
 		return this.courseService.getCourse(Long.parseLong(courseId));
 		
@@ -51,24 +52,11 @@ public class MyController {
 		return this.courseService.addCourse(course);	
 	}
 	
-//	@PutMapping(path = "/{courseId}", consumes = "application/json")
-//	public Courses updateCourse(@PathVariable("courseId") int courseId, @RequestBody Courses course)
-//	{	
-//		return this.courseService.updateCourse(courseId,course);	
-//	}
-//	
-//	
-//	@DeleteMapping("/{courseId}")
-//	public Courses deleteCourse(@PathVariable("courseId") int courseId) {
-//		 return this.courseService.deleteCourse(courseId);
-//	}
-	
 	@PutMapping("/")
 	public Courses updateCourse(@RequestBody Courses course)
 	{	
 		return this.courseService.updateCourse(course);	
 	}
-	
 	
 	@DeleteMapping("/{courseId}")
 	public ResponseEntity<HttpStatus> deleteCourse(@PathVariable String courseId) {

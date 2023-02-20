@@ -1,97 +1,50 @@
 package com.springrest.springrest.services;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.springrest.springrest.dao.CourseDao;
 import com.springrest.springrest.entities.Courses;
 
 @Service
 public class CourseServiceImpl implements CourseService {
 	
-	List<Courses> list;
+	@Autowired
+	private CourseDao courseDao;
 	
-	public CourseServiceImpl() {
-		list = new ArrayList<>();
-		list.add(new Courses(123,"Java","Springboot"));
-		list.add(new Courses(127,"Python","Django"));
-		
+	public CourseServiceImpl() {	
 	}
 	
-
 	@Override
 	public List<Courses> getCourses() {
-		return list;
+		return courseDao.findAll();
 	}
 
+	
 	@Override
-	public Courses getCourse(long courseId) {
-		Courses c = null;
-		for(Courses course:list) {
-			if(course.getId() == courseId) {
-				c = course;
-				break;
-			}
-		}
-		return c;
+	public Optional<Courses> getCourse(long courseId) {
+		return courseDao.findById(courseId);
 	}
 
 	@Override
 	public Courses addCourse(Courses course) {
-		list.add(course);
+		courseDao.save(course);
 		return course;
 	}
-
-
-	
-//	@Override
-//	public Courses deleteCourse(int courseId) {
-////		list.removeIf(id -> id.equals(courseId));
-//		Iterator<Courses> iterator = list.iterator();
-//		while(iterator.hasNext()) {
-//			Courses course = iterator.next();
-//			if(course.getId() == courseId) {
-//				iterator.remove();
-//				return course;
-//			}
-//		}
-//		return null;
-//	}
-//	
-//
-//	@Override
-//	public Courses updateCourse(int courseId, Courses course) {
-//		Iterator<Courses> iterator = list.iterator();
-//		while(iterator.hasNext()) {
-//			Courses c = iterator.next();
-//			if(c.getId() == courseId) {
-//				c.setId(course.getId());
-//				c.setTitle(course.getTitle());
-//				c.setDesc(course.getDesc());
-//				return c;
-//			}
-//		}
-//		return null;
-//	}
 	
 	@Override
 	public void deleteCourse(long courseId) {
-		list = this.list.stream().filter(e->e.getId() != courseId).collect(Collectors.toList());
+		Courses entityCourses = courseDao.getReferenceById(courseId);
+		courseDao.delete(entityCourses);
 	}
-
 
 	@Override
 	public Courses updateCourse(Courses course) {
-		list.forEach(e-> {
-			if (e.getId() == course.getId()) {
-				e.setTitle(course.getTitle());
-				e.setDesc(course.getDesc());
-			}
-		});
+		courseDao.save(course);
 		return course;
 	}
-
 
 }
